@@ -1,0 +1,4 @@
+
+node_modules/.bin/nodemon
+node_modules/.bin/color-support
+node_modules
