@@ -166,6 +166,54 @@ router.get('/search', async (req, res) => {
   }
 });
 
+// an api that will decrese 1 from the number of copies of a book also add validation if number of copies 0 show out of stock
+router.put('/decrease/:ISBN', async (req, res) => {
+  const { ISBN } = req.params;
+
+  try {
+    const book = await Book.findOne({ ISBN });
+
+    if (!book) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    if (book.copies === 0) {
+      return res.status(404).json({ error: 'Out of stock' });
+    }
+
+    book.copies = book.copies - 1;
+
+    await book.save();
+
+    res.status(200).json({ message: 'Book copies updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+// an api that will increse 1 from the number of copies of a book
+router.put('/increase/:ISBN', async (req, res) => {
+  const { ISBN } = req.params;
+
+  try {
+    const book = await Book.findOne({ ISBN });
+
+    if (!book) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    book.copies = book.copies + 1;
+
+    await book.save();
+
+    res.status(200).json({ message: 'Book copies updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 
 
 module.exports = router;

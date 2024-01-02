@@ -64,7 +64,25 @@ router.put('/bookissueupdate/:ISBN', async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
   }
-}); 
+});
+
+// get api by regNo
+router.get('/bookissue/:regNo', async (req, res) => {
+  try {
+    const bookrecord = await Bookissue.findOne({ regNo: req.params.regNo });
+
+    if (!bookrecord) {
+      return res.status(404).json({ error: 'Book Issue not found' });
+    }
+
+    res.status(200).json(bookrecord);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 
 
 

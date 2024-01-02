@@ -23,7 +23,7 @@ const bookSchema = new mongoose.Schema({
     year: Number,
     pages: Number,
     copies: {
-        type: String,
+        type: Number,
         required: true,
     },
     publisher: String,
