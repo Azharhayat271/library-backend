@@ -8,6 +8,7 @@ const Student =require("./routes/student");
 const Book =require("./routes/books");
 const BookIssue = require("./routes/bookrecords");
 const Finecal = require("./routes/finecalculation");
+const Return= require("./routes/return");
 
 
 
@@ -26,6 +27,7 @@ app.use('/students',Student);
 app.use('/book',Book);
 app.use('/bookissue',BookIssue);
 app.use('/fine',Finecal);
+app.use('/return',Return);
 
 
 
