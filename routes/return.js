@@ -43,4 +43,32 @@ router.get("/getall", async (req, res) => {
   }
 });
 
+// POST /pay-now
+router.post('/paynow', async (req, res) => {
+  try {
+    const { id } = req.body; // Assuming 'id' is the unique identifier for records in the return collection
+
+    // Update the payment status, totalFine, additionalFine, and fine fields in the return collection
+    await BookReturn.findOneAndUpdate({ _id: id }, { isPaid: true, totalFine: 0, additionalFine: 0, fine: 0 });
+
+    res.status(200).json({ message: 'Payment status updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// get api to get all the records
+router.get("/getallrecords", async (req, res) => {
+  try {
+    const bookReturns = await BookReturn.find();
+    res.status(200).json(bookReturns);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
 module.exports = router;

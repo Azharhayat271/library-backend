@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const BookReturnSchema = new mongoose.Schema({
   regNo: String,
@@ -12,8 +12,9 @@ const BookReturnSchema = new mongoose.Schema({
   totalFine: Number,
   additionalFine: Number,
   reason: String,
+  status: String,
 });
 
-const BookReturn = mongoose.model('BookReturn', BookReturnSchema);
+const BookReturn = mongoose.model("BookReturn", BookReturnSchema);
 
 module.exports = BookReturn;
