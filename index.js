@@ -9,6 +9,7 @@ const Book =require("./routes/books");
 const BookIssue = require("./routes/bookrecords");
 const Finecal = require("./routes/finecalculation");
 const Return= require("./routes/return");
+const Count = require("./routes/count");
 
 
 
@@ -28,6 +29,7 @@ app.use('/book',Book);
 app.use('/bookissue',BookIssue);
 app.use('/fine',Finecal);
 app.use('/return',Return);
+app.use('/count',Count);
 
 
 
@@ -35,6 +37,8 @@ app.use('/return',Return);
 mongoose.connect('mongodb://localhost:27017/library')
 .then(()=> console.log("connected to mongodb"))
 .catch(err=> console.error("Could not connect to mongodb",err))
+
+
 
 const port = 5000;
 
