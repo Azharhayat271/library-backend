@@ -35,7 +35,7 @@ router.post("/return-book", async (req, res) => {
 // GET /return-book where totalFine is greater than 0
 router.get("/getall", async (req, res) => {
   try {
-    const bookReturns = await BookReturn.find({ totalFine: { $gt: 0 } });
+    const bookReturns = await BookReturn.find({ status: false });
     res.status(200).json(bookReturns);
   } catch (error) {
     console.error(error);
@@ -44,17 +44,17 @@ router.get("/getall", async (req, res) => {
 });
 
 // POST /pay-now
-router.post('/paynow', async (req, res) => {
+router.post("/paynow", async (req, res) => {
   try {
     const { id } = req.body; // Assuming 'id' is the unique identifier for records in the return collection
 
     // Update the payment status, totalFine, additionalFine, and fine fields in the return collection
-    await BookReturn.findOneAndUpdate({ _id: id }, { isPaid: true, totalFine: 0, additionalFine: 0, fine: 0 });
+    await BookReturn.findOneAndUpdate({ _id: id }, { status: true });
 
-    res.status(200).json({ message: 'Payment status updated successfully' });
+    res.status(200).json({ message: "Payment status updated successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -68,7 +68,62 @@ router.get("/getallrecords", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+// GET /get-fines-summary
+// GET /get-fines-summary
+router.get("/summary", async (req, res) => {
+  try {
+    // Calculate total fine
+    const totalFineResult = await BookReturn.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalFine: { $sum: { $toDouble: "$totalFine" } },
+        },
+      },
+    ]);
 
+    // Calculate pending fine
+    const pendingFineResult = await BookReturn.aggregate([
+      {
+        $match: {
+          status: false,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          pendingFine: { $sum: { $toDouble: "$totalFine" } },
+        },
+      },
+    ]);
 
+    // Calculate paid fine
+    const paidFineResult = await BookReturn.aggregate([
+      {
+        $match: {
+          status: true,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          paidFine: { $sum: { $toDouble: "$totalFine" } },
+        },
+      },
+    ]);
+
+    const finesSummary = {
+      totalFine: totalFineResult.length > 0 ? totalFineResult[0].totalFine : 0,
+      pendingFine:
+        pendingFineResult.length > 0 ? pendingFineResult[0].pendingFine : 0,
+      paidFine: paidFineResult.length > 0 ? paidFineResult[0].paidFine : 0,
+    };
+
+    res.status(200).json(finesSummary);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 module.exports = router;

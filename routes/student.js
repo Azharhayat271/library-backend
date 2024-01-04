@@ -141,5 +141,17 @@ router.get('/search', async (req, res) => {
   }
 });
 
+// an get api to return the total number of students
+router.get('/count', async (req, res) => {
+  try {
+    const count = await Student.countDocuments();
+    res.status(200).json({ count });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 
 module.exports = router;
